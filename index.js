@@ -1,11 +1,12 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const redis = require('redis');
+import express from 'express'
+import fetch from 'node-fetch'
+import redis from 'redis'
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 
 const client = redis.createClient(REDIS_PORT);
+await client.connect();
 const app = express();
 
 // Create template for sending response to client
@@ -47,6 +48,6 @@ function cache(req, res, next) {
 
 app.get('/repos/:username', cache, getRepos);
 
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
