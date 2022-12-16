@@ -5,13 +5,17 @@ import redis from 'redis'
 const PORT = process.env.PORT || 3000;
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 
-const client = redis.createClient(REDIS_PORT);
+const client = redis.createClient({
+  port : REDIS_PORT,
+  enable_offline_queue: false,
+  legacyMode: true
+});
 await client.connect();
 const app = express();
 
 // Create template for sending response to client
-function setResponse(username, repos) {
-  return `<h1>${username} is having ${repos} repositories</h2>`;
+function sendData(username, count) {
+  return `<h1>${username} is having ${count} repositories</h1>`;
 }
 
 // Get data from github
@@ -20,11 +24,11 @@ async function getRepos(req, res, next) {
     const { username } = req.params;
     const response = await fetch(`https://api.github.com/users/${username}`);
     const data = await response.json();
-    const repos = data.public_repos;
+    const count = data.public_repos;
 
     // Feed data to Redis
-    client.setex(username, 3600, repos);
-    res.send(setResponse(username, repos));
+    client.setEx(username, 100, count);
+    res.send(sendData(username, count));
   }
   catch (err) {
     console.error(err);
@@ -35,11 +39,10 @@ async function getRepos(req, res, next) {
 // Cache middleware
 function cache(req, res, next) {
   const { username } = req.params;
-
-  client.get(username, (err, data) => {
+  client.get(username, (err, count) => {
     if (err) throw err;
-    if (data !== null) {
-      res.send(setResponse(username, data));
+    if (count !== null) {
+      res.send(sendData(username, count));
     } else {
       next();
     }
