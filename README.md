@@ -40,3 +40,7 @@ The application fetches and displays the following information for a GitHub user
 The server will start on port 3000 (or the value of `process.env.PORT`).
 Access the endpoint in your browser or using a tool like `curl`:
 `http://localhost:3000/repos/:username` (e.g., `http://localhost:3000/repos/octocat`)
+
+## Verification
+
+Run `npm run verify` after installing dependencies. Read [.cursor/skills/verify-redisexample/SKILL.md](.cursor/skills/verify-redisexample/SKILL.md) for isolation, prerequisites, browser mode, proof locations, feature coverage and cleanup. Setup is not a claim of full feature or production verification.
