@@ -7,5 +7,8 @@
     "nodemon": "^2.0.20",
     "redis": "^4.5.1",
     "redis-server": "^1.2.2"
+  },
+  "scripts": {
+    "verify": "node .cursor/skills/verify-redisexample/verify.cjs"
   }
 }

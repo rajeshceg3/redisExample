@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 
 const client = redis.createClient({
-  port : REDIS_PORT,
+  socket: { host: '127.0.0.1', port: Number(REDIS_PORT) },
   enable_offline_queue: false,
   legacyMode: true
 });
